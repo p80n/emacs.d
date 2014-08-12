@@ -32,6 +32,10 @@
 ;; (setq whitespace-style '(trailing lines space-before-tab
 ;;                                   indentation space-after-tab) )
 
+;; delete trailing whitespace
+(require 'ws-trim)
+(global-ws-trim-mode t)
+
 
 ;; show cursor position
 (column-number-mode)
@@ -55,12 +59,19 @@
 (add-hook 'ruby-mode-hook (lambda () (setq tab-width 2)))
 ;;(add-hook 'ruby-mode-hook (lambda () (interactive) (column-marker-3 80)) )
 
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-hook 'text-mode-hook 'ansi-color-for-comint-mode-on)
+
 ;; yaml syntax highlighting
 (require 'yaml-mode)
 (require 'tt-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.tt$" . tt-mode))
 (add-to-list 'auto-mode-alist '("\\.ett$" . tt-mode))
+(add-to-list 'auto-mode-alist '("content-type*" . nxml-mode))
+(add-to-list 'auto-mode-alist '("\.xslt" . nxml-mode))
+(add-to-list 'auto-mode-alist '("Vagrantfile" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
 
 ;; maximum frame on launch
 (require 'maxframe)
@@ -120,12 +131,11 @@
 
 ;; point to cucumber languages.yml or gherkin i18n.yml to use
 ;; exactly the same localization your cucumber uses
-(setq feature-default-i18n-file "/Users/pvaughn/.rvm/gems/ruby-1.9.3-p125/gems/gherkin-2.11.1/lib/gherkin/i18n.yml")
+;;(setq feature-default-i18n-file "/Users/pvaughn/.rvm/gems/ruby-1.9.3-p125/gems/gherkin-2.11.1/lib/gherkin/i18n.yml")
 ;; ;; and load feature-mode
 (require 'feature-mode)
 (require 'puppet-mode)
 (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
 (add-to-list 'auto-mode-alist '("\.pp$" . puppet-mode))
-(add-to-list 'auto-mode-alist '("content-type" . nxml-mode))
 
 (autoload 'dirtree "dirtree" "Add directory to tree view" t)
