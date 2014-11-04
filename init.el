@@ -64,10 +64,7 @@
 
 ;; yaml syntax highlighting
 (require 'yaml-mode)
-(require 'tt-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.tt$" . tt-mode))
-(add-to-list 'auto-mode-alist '("\\.ett$" . tt-mode))
 (add-to-list 'auto-mode-alist '("content-type*" . nxml-mode))
 (add-to-list 'auto-mode-alist '("\.xslt" . nxml-mode))
 (add-to-list 'auto-mode-alist '("Vagrantfile" . ruby-mode))
