@@ -9,33 +9,22 @@
 (setq next-line-add-newlines nil)
 ;; disable half-screen jumps
 (setq scroll-step 1)
-(setq make-backup-files nil)
 ;; disable backup
+(setq make-backup-files nil)
 (setq backup-inhibited t)
 ;; disable auto save
 (setq auto-save-default nil)
 ;; disable bell
 (setq visible-bell t)
-;; recent files
-(require 'recentf)
-    (recentf-mode 1)
+;; disable file locks (.#files)
+(setq create-lockfiles nil)
+
+;; bump up font size
 (set-face-attribute 'default nil :height 150)
-
-;; highlight over 80
-;;(require 'whitespace)
-;;(setq my-long-line-face (make-face 'my-long-line-face))
-;;(set-face-attribute 'my-long-line-face nil :underline t)
-;;(setq whitespace-line 'my-long-line-face)
-;;(setq whitespace-style '(face lines-tail))
-;;(global-whitespace-mode t)
-
-;; (setq whitespace-style '(trailing lines space-before-tab
-;;                                   indentation space-after-tab) )
 
 ;; delete trailing whitespace
 (require 'ws-trim)
 (global-ws-trim-mode t)
-
 
 ;; show cursor position
 (column-number-mode)
@@ -57,29 +46,30 @@
 (setq-default tab-width 4)
 ;; tabs are 2 spaces wide for ruby code
 (add-hook 'ruby-mode-hook (lambda () (setq tab-width 2)))
-;;(add-hook 'ruby-mode-hook (lambda () (interactive) (column-marker-3 80)) )
-
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-(add-hook 'text-mode-hook 'ansi-color-for-comint-mode-on)
 
 ;; yaml syntax highlighting
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-(add-to-list 'auto-mode-alist '("content-type*" . nxml-mode))
+
+;; XML
 (add-to-list 'auto-mode-alist '("\.xslt" . nxml-mode))
+
+;; Ruby
 (add-to-list 'auto-mode-alist '("Vagrantfile" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
+(require 'ruby-block)
+(ruby-block-mode t)
 
 ;; maximum frame on launch
 (require 'maxframe)
+(setq mf-max-width 1440)
 (add-hook 'window-setup-hook 'maximize-frame t)
 
-
 ;; better backup system
+(setq ebackup-destination-dir "~/.emacs.d/backups")
 (require 'ebackup)
+(setq ebackup-destination-dir "~/.emacs.d/backups")
 
-(require 'ruby-block)
-(ruby-block-mode t)
 
 ;; color themes
 (add-to-list 'load-path "~/.emacs.d/color-theme")
@@ -106,15 +96,9 @@
      ;; white
      ;; (color-theme-black)
 
-   ))
+     ))
 
- (autoload 'artist-mode "artist" "Enter artist-mode" t)
-
-;; autocomplete
-;; (require 'auto-complete-config)
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
-;; (ac-config-default)
-
+(autoload 'artist-mode "artist" "Enter artist-mode" t)
 
 
 ;; cucumber
@@ -124,14 +108,10 @@
 ;; ;; optional configurations
 ;; ;; default language if .feature doesn't have "# language: fi"
 ;(setq feature-default-language "fi")
-
 ;; point to cucumber languages.yml or gherkin i18n.yml to use
 ;; exactly the same localization your cucumber uses
 ;;(setq feature-default-i18n-file "/Users/pvaughn/.rvm/gems/ruby-1.9.3-p125/gems/gherkin-2.11.1/lib/gherkin/i18n.yml")
-;; ;; and load feature-mode
+;; and load feature-mode
 ;;(require 'feature-mode#)
 ;;(add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
-(require 'puppet-mode)
-(add-to-list 'auto-mode-alist '("\.pp$" . puppet-mode))
 
-(autoload 'dirtree "dirtree" "Add directory to tree view" t)
