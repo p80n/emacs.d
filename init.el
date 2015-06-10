@@ -19,6 +19,8 @@
 ;; disable file locks (.#files)
 (setq create-lockfiles nil)
 
+(set-default 'truncate-lines t)
+
 ;; bump up font size
 (set-face-attribute 'default nil :height 150)
 
@@ -37,28 +39,44 @@
 (global-set-key [(control l)] 'goto-line)
 (global-set-key [(home)] 'beginning-of-line)
 (global-set-key [(end)] 'end-of-line)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 
+;; Unbind Pesky Sleep Button
+(when (display-graphic-p)
+  (global-unset-key [(control z)])
+  (global-unset-key [(control x)(control z)]))
 
 ;; tab behaviors
 ;; no tabs, only spaces
 (setq-default indent-tabs-mode nil)
 ;; default width
-(setq-default tab-width 4)
-;; tabs are 2 spaces wide for ruby code
-(add-hook 'ruby-mode-hook (lambda () (setq tab-width 2)))
+(setq-default tab-width 2)
+(setq js-indent-level 2)
+(setq css-indent-offset 2)
+;;(add-hook 'ruby-mode-hook (lambda () (setq tab-width 2)))
+
+;; less syntax support
+(require 'less-css-mode)
 
 ;; yaml syntax highlighting
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
+
 ;; XML
-(add-to-list 'auto-mode-alist '("\.xslt" . nxml-mode))
+(add-to-list 'auto-mode-alist '("\\.xslt" . nxml-mode))
 
 ;; Ruby
 (add-to-list 'auto-mode-alist '("Vagrantfile" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
 (require 'ruby-block)
 (ruby-block-mode t)
+;; don't insert file encoding
+(setq ruby-insert-encoding-magic-comment nil)
+
+;; Go
+(require 'go-mode-autoloads)
+(add-to-list 'auto-mode-alist '("\\.go" . go-mode))
 
 ;; maximum frame on launch
 (require 'maxframe)
@@ -115,3 +133,62 @@
 ;;(require 'feature-mode#)
 ;;(add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
 
+(require 'ibuffer-vc)
+(add-hook 'ibuffer-hook
+  (lambda ()
+    (ibuffer-vc-set-filter-groups-by-vc-root)
+    (unless (eq ibuffer-sorting-mode 'alphabetic)
+    (ibuffer-do-sort-by-alphabetic))))
+
+
+ (setq ibuffer-formats
+      '((mark modified read-only vc-status-mini " "
+              (name 18 18 :left :elide)
+              " "
+              (size 9 -1 :right)
+              " "
+              (mode 16 16 :left :elide)
+              " "
+              (vc-status 16 16 :left)
+              " "
+              filename-and-process)))
+
+
+;; handy function to colorize color-coded files
+(require 'ansi-color)
+(defun display-ansi-colors ()
+  (interactive)
+  (ansi-color-apply-on-region (point-min) (point-max)))
+
+
+;; Ignore modification-time-only changes in files, i.e. ones that
+;; don't really change the contents.  This happens often with
+;; switching between different VC buffers.
+
+(defun update-buffer-modtime-if-byte-identical ()
+  (let* ((size      (buffer-size))
+         (byte-size (position-bytes size))
+         (filename  buffer-file-name))
+    (when (and byte-size (<= size 1000000))
+      (let* ((attributes (file-attributes filename))
+             (file-size  (nth 7 attributes)))
+        (when (and file-size
+                   (= file-size byte-size)
+                   (string= (buffer-substring-no-properties 1 (1+ size))
+                            (with-temp-buffer
+                              (insert-file-contents filename)
+                              (buffer-string))))
+          (set-visited-file-modtime (nth 5 attributes))
+          t)))))
+
+(defun verify-visited-file-modtime--ignore-byte-identical (original &optional buffer)
+  (or (funcall original buffer)
+      (with-current-buffer buffer
+        (update-buffer-modtime-if-byte-identical))))
+(advice-add 'verify-visited-file-modtime :around #'verify-visited-file-modtime--ignore-byte-identical)
+
+(defun ask-user-about-supersession-threat--ignore-byte-identical (original &rest arguments)
+  (unless (update-buffer-modtime-if-byte-identical)
+    (apply original arguments)))
+(advice-add 'ask-user-about-supersession-threat :around #'ask-user-about-supersession-threat--ignore-byte-identical)
+(put 'upcase-region 'disabled nil)
