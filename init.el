@@ -36,6 +36,7 @@
 
 ;; key bindings
 (global-set-key "\C-c\C-c" 'comment-region)
+
 (global-set-key [(control l)] 'goto-line)
 (global-set-key [(home)] 'beginning-of-line)
 (global-set-key [(end)] 'end-of-line)
@@ -88,6 +89,7 @@
 (require 'ebackup)
 (setq ebackup-destination-dir "~/.emacs.d/backups")
 
+(require 'erlang)
 
 ;; color themes
 (add-to-list 'load-path "~/.emacs.d/color-theme")
@@ -118,7 +120,17 @@
 
 (autoload 'artist-mode "artist" "Enter artist-mode" t)
 
+(require 'doc-mode)
+(require 'asciidoc)
 
+
+(add-to-list 'auto-mode-alist '("\\.doc$" . doc-mode))
+(autoload 'doc-mode "doc-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode))
+(add-hook 'doc-mode-hook
+          '(lambda ()
+             (turn-on-auto-fill)
+             (require 'asciidoc)))
 ;; cucumber
 ;; Copy files to ~/.emacs.d/elisp/feature-mode, for example,
 ;; and add this to your .emacs to load the mode
@@ -160,6 +172,9 @@
   (interactive)
   (ansi-color-apply-on-region (point-min) (point-max)))
 
+
+(require 'dockerfile-mode)
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
 
 ;; Ignore modification-time-only changes in files, i.e. ones that
 ;; don't really change the contents.  This happens often with
