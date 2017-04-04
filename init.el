@@ -36,6 +36,10 @@
 
 ;; key bindings
 (global-set-key "\C-c\C-c" 'comment-region)
+;; make ctrl-c ctrl-c work for bash script mode
+(add-hook 'sh-mode-hook
+          (lambda ()
+            (define-key sh-mode-map "\C-c\C-c" 'comment-region)))
 
 (global-set-key [(control l)] 'goto-line)
 (global-set-key [(home)] 'beginning-of-line)
@@ -54,15 +58,20 @@
 (setq-default tab-width 2)
 (setq js-indent-level 2)
 (setq css-indent-offset 2)
+(setq sh-basic-offset 2)
+(setq sh-indentation 2)
 ;;(add-hook 'ruby-mode-hook (lambda () (setq tab-width 2)))
 
 ;; less syntax support
-(require 'less-css-mode)
+;;(require 'less-css-mode)
 
 ;; yaml syntax highlighting
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
+;; elixir/erlang
+(require 'elixir-mode)
 
 ;; XML
 (add-to-list 'auto-mode-alist '("\\.xslt" . nxml-mode))
@@ -78,6 +87,10 @@
 ;; Go
 (require 'go-mode-autoloads)
 (add-to-list 'auto-mode-alist '("\\.go" . go-mode))
+
+;; CoffeeScript
+;;(reqire 'coffee-script)
+;;(add-to-list 'auto-mode-alist '("\\.coffee" . go-mode))
 
 ;; maximum frame on launch
 (require 'maxframe)
@@ -207,3 +220,23 @@
     (apply original arguments)))
 (advice-add 'ask-user-about-supersession-threat :around #'ask-user-about-supersession-threat--ignore-byte-identical)
 (put 'upcase-region 'disabled nil)
+
+
+;; el capitain workaround
+(setq visible-bell nil)
+(setq ring-bell-function (lambda ()
+(invert-face 'mode-line)
+(run-with-timer 0.1 nil 'invert-face 'mode-line)))
+
+
+(require 'coffee-mode)
+;; coffeescript
+(custom-set-variables
+ '(coffee-tab-width 2)
+ '(coffee-args-compile '("-c" "--no-header" "--bare")))
+
+(eval-after-load "coffee-mode"
+  '(progn
+     (define-key coffee-mode-map [(meta r)] 'coffee-compile-buffer)
+     (define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent)))
+(put 'downcase-region 'disabled nil)
