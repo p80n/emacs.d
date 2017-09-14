@@ -44,6 +44,9 @@
 (global-set-key [(control l)] 'goto-line)
 (global-set-key [(home)] 'beginning-of-line)
 (global-set-key [(end)] 'end-of-line)
+(setq mac-command-modifier 'super) ; make cmd key do Super
+(global-set-key [(super left)] 'beginning-of-buffer)
+(global-set-key [(super right)] 'end-of-buffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;; Unbind Pesky Sleep Button
@@ -69,6 +72,12 @@
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml.erb$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yml.erb$" . yaml-mode))
+
+(require 'csharp-mode)
+(add-to-list 'auto-mode-alist '("\\.cs$" . csharpe-mode))
+
 
 ;; elixir/erlang
 (require 'elixir-mode)
@@ -136,6 +145,7 @@
 (require 'doc-mode)
 (require 'asciidoc)
 
+(add-to-list 'auto-mode-alist '("\\.sh.erb$" . shell-script-mode))
 
 (add-to-list 'auto-mode-alist '("\\.doc$" . doc-mode))
 (autoload 'doc-mode "doc-mode" nil t)
