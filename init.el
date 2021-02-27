@@ -4,7 +4,7 @@
 (setq inhibit-splash-screen t)
 (fset 'yes-or-no-p 'y-or-n-p)
 ;; delete/backspace are not the same
-(normal-erase-is-backspace-mode 1)
+(normal-erase-is-backspace-mode 0)
 ;; end of file infinite scrolling
 (setq next-line-add-newlines nil)
 ;; disable half-screen jumps
@@ -21,8 +21,10 @@
 
 (set-default 'truncate-lines t)
 
+
+
 ;; bump up font size
-(set-face-attribute 'default nil :height 150)
+;;(set-face-attribute 'default nil :height 150)
 
 ;; delete trailing whitespace
 (require 'ws-trim)
@@ -75,10 +77,13 @@
 (add-to-list 'auto-mode-alist '("\\.yaml.erb$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yml.erb$" . yaml-mode))
 
+
 (require 'csharp-mode)
 (add-to-list 'auto-mode-alist '("\\.cs$" . csharpe-mode))
 
 
+(require 'rust-mode)
+(autoload 'rust-mode "rust-mode" nil t)
 ;; elixir/erlang
 (require 'elixir-mode)
 
@@ -131,8 +136,8 @@
      ;; black
      ;; (color-theme-arjen)
      ;; (color-theme-comidia)
-     (color-theme-hober)
-     ;; (color-theme-renegade)
+     ;; (color-theme-hober)
+      (color-theme-renegade)
      ;; (color-theme-taming-mr-arneson)
      ;; (color-theme-tty-dark)
      ;; white
@@ -242,11 +247,25 @@
 (require 'coffee-mode)
 ;; coffeescript
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(coffee-args-compile (quote ("-c" "--no-header" "--bare")))
  '(coffee-tab-width 2)
- '(coffee-args-compile '("-c" "--no-header" "--bare")))
+ '(custom-enabled-themes (quote (deeper-blue))))
 
 (eval-after-load "coffee-mode"
   '(progn
      (define-key coffee-mode-map [(meta r)] 'coffee-compile-buffer)
      (define-key coffee-mode-map (kbd "C-j") 'coffee-newline-and-indent)))
 (put 'downcase-region 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
+(set-cursor-color "#ffffff")
